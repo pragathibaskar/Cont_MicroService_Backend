@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.opentracing.Span;
 import io.opentracing.Tracer;
 
 @Component
@@ -58,6 +59,8 @@ condition="headers['message']=='encurso'")
 			  Cert cert1 = message.getPayload();
 			  Message<Cert> message1 = new Message<Cert>("CertTramitadaEvent", cert1);
 			  message1.setLabel("CheckDateOk-4");
+			  Span span = tracer.buildSpan("Sending Tramitada Event from microservice 1").start();
+			  span.finish();
 			  messageSender.sendTramitada(message1);
 		  }
 		  else if((message.getPayload().getPeriodo().getDay()==new Date().getDay())&&
@@ -68,7 +71,9 @@ condition="headers['message']=='encurso'")
 			  Cert cert1 = message.getPayload();
 			  Message<Cert> message1 = new Message<Cert>("CertTramitadaEvent", cert1);
 			  message1.setLabel("CheckDate-Ok-4");
-				messageSender.sendTramitada(message1);
+			   Span span = tracer.buildSpan("Sending Tramitada Event from microservice 1").start();
+			  span.finish();
+		         messageSender.sendTramitada(message1);
 		  }
 		  else if(message.getPayload().getPeriodo().before(new Date()))
 		  {
@@ -76,6 +81,8 @@ condition="headers['message']=='encurso'")
 			 Cert cert1 = message.getPayload();
 		  Message<Cert> message1 = new Message<Cert>("OutOfDateEvent", cert1);
 		  message1.setLabel("CheckDate-OutOfDate-4");
+	         Span span = tracer.buildSpan("Sending OutOfDate Event from microservice 1").start();
+		  span.finish();
 			messageSender.sendOutOfDate(message1);
 		  }
 	  }
@@ -86,6 +93,8 @@ condition="headers['message']=='encurso'")
 			 Cert cert1 = message.getPayload();
 			 Message<Cert> message1 = new Message<Cert>("CertDenegadaEvent", cert1);
 			 message1.setLabel("CheckDate-Denegada-8");
+		          Span span = tracer.buildSpan("Sending Denegada Event from microservice 1").start();
+			  span.finish();
 				messageSender.sendCertdenegada(message1); 
 		 
 	  }
@@ -99,6 +108,8 @@ condition="headers['message']=='encurso'")
 	  Message<Cert> message = new ObjectMapper().readValue(messageJson, new TypeReference<Message<Cert>>(){});
 		 Message<Cert> message1 = new Message<Cert>("CertDenegadaEvent", message.getPayload());
 		 message1.setLabel("Rollback-Denegada-8");
+	     Span span = tracer.buildSpan("Sending rollback Denegada Event from microservice 1").start();
+			  span.finish();
 			messageSender.sendCertdenegada(message1); 
 	 
   }
