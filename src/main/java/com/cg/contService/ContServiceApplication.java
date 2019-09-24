@@ -8,7 +8,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableAutoConfiguration
-@EnableDiscoveryClient
 @ComponentScan("com.cg.contService.*")
 public class ContServiceApplication {
 
